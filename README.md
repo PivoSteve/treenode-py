@@ -42,7 +42,19 @@ To print the tree, simply use the `print()` function:
 ```python
 print(tree)
 ```
-This will output:
+This will be our full code:
+```python
+from treenode import TreeNode
+
+tree = TreeNode("name of tree")
+child1 = tree.add_child("name of child node 1")
+child2 = tree.add_child("name of child node 2", slash=False)
+subchild1 = child1.add_child("Subchild 1", slash=False)
+subchild2 = child1.add_child("Subchild 2", slash=False)
+print(tree)
+```
+
+This will output(check github if you on pypi):
 ```
 Root/
 ├── Child 1/
