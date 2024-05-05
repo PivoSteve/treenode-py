@@ -13,14 +13,17 @@ class TreeNode:
         self.slash = slash
         self.children = []
 
-    def add_child(self, child_node):
+    def add_child(self, name, slash=True):
         """
         Adds a child node to the current node.
 
         Args:
-            child_node (TreeNode): The child node to add.
+            name (str): The name of the child node.
+            slash (bool, optional): Indicates whether the node represents a directory path with /. Defaults to True.
         """
+        child_node = TreeNode(name, slash)
         self.children.append(child_node)
+        return child_node
 
     def __repr__(self, level=0, last=False):
         """
@@ -37,33 +40,34 @@ class TreeNode:
         if level > 0:
             ret += "│   " * (level - 1)
             ret += "├── " if not last else "└── "
-        ret += self.name + ("/" if not self.slash else "") + "\n"
+        ret += self.name
+        if self.slash:
+            ret += "/"
+        ret += "\n"
         for i, child in enumerate(self.children):
             last = i == len(self.children) - 1
             ret += child.__repr__(level + 1, last)
         return ret
-
+    
     def generate_treepath(self, path):
         """
-        Generates a tree structure for the given directory path.
+        Generates a tree representing the directory structure.
 
         Args:
-            path (str): The directory path.
+            path (str): The root path of the directory structure.
 
         Returns:
-            TreeNode: The root node of the generated tree structure.
+            TreeNode: The root of the generated tree.
         """
-        root = TreeNode(os.path.basename(path))
         if os.path.isdir(path):
-            items = os.listdir(path)
-            items.sort()
-            for i, item in enumerate(items):
-                item_path = os.path.join(path, item)
-                last = i == len(items) - 1
-                root.add_child(self.generate_treepath(item_path))
-        else:
-            root.is_file = True
-        return root
+            for item in os.listdir(path):
+                full_item_path = os.path.join(path, item)
+                if os.path.isdir(full_item_path):
+                    child_node = self.add_child(item)
+                    child_node.generate_treepath(full_item_path)
+                else:
+                    self.add_child(item, slash=False)
+        return self
 
     def find_node(self, name):
         """
@@ -111,7 +115,7 @@ class TreeNode:
             list: A list of file names.
         """
         files = []
-        if self.is_file:
+        if not self.slash:
             files.append(self.name)
         for child in self.children:
             files.extend(child.get_files())
@@ -125,7 +129,7 @@ class TreeNode:
             list: A list of folder names.
         """
         folders = []
-        if not self.is_file:
+        if self.slash:
             folders.append(self.name)
         for child in self.children:
             folders.extend(child.get_folders())
@@ -139,7 +143,7 @@ class TreeNode:
             int: The total number of files.
         """
         count = 0
-        if self.is_file:
+        if not self.slash:
             return 1
         for child in self.children:
             count += child.count_files()
@@ -152,7 +156,7 @@ class TreeNode:
         Returns:
             int: The total number of folders.
         """
-        count = 1 if not self.is_file else 0
+        count = 1 if self.slash else 0
         for child in self.children:
             count += child.count_folders()
         return count
