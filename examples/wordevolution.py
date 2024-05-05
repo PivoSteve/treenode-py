@@ -1,6 +1,10 @@
-import os
-from libraries.json import massive
-from libraries.treenode import TreeNode
+import os   
+import sys
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
+from treenode import TreeNode
+from examples.data.readjson import massive
 
 def levenshtein_distance(s1, s2):
     if len(s1) < len(s2):
@@ -44,7 +48,7 @@ def closest_word(target_word, word_list, used_words):
 words = massive().load_words_from_json()
 branches_iterations = 1
 iterations = 151
-target_word = input("Введите слово на русском языке: ")
+target_word = input("Enter a word in Russian (e.g. \"суп\", \"крем\", \"конструктор\"): ")
 
 def generate_branch(iterations, target_word, used_words):
     branch = []
@@ -60,21 +64,21 @@ def generate_branch(iterations, target_word, used_words):
     return branch
 
 def generate_tree_for_branches(branches_iterations, iterations, target_word):
-    root = TreeNode(f"Оригинальное слово: {target_word}")
+    root = TreeNode(f"Original word: {target_word}", is_path=False)
     used_words_set = set()
     used_words_for_branches = [set() for _ in range(branches_iterations)]
     for i in range(1, branches_iterations + 1):
         used_words = used_words_for_branches[i - 1]
         branch = generate_branch(iterations, target_word, used_words)
-        branch_node = TreeNode(f"Ветка {i}:")
+        branch_node = TreeNode(f"Branch {i}:", is_path=False)
         unique_branch_words = set()
         for j, word in enumerate(branch):
             if word != "©":
                 if word not in unique_branch_words and word not in used_words_set:
-                    branch_node.add_child(TreeNode(f"[{j}] Ближайшее слово: {word}"))
+                    branch_node.add_child(TreeNode(f"[{j}] Closest word: {word}", is_path=False))
                     unique_branch_words.add(word)
                     used_words_set.add(word)
-            elif word == "Слово не найдено!":
+            elif word == "Word not found!":
                 break
         root.add_child(branch_node)
     return root
