@@ -1,4 +1,6 @@
+import os
 from libraries.json import massive
+from libraries.treenode import TreeNode
 
 def levenshtein_distance(s1, s2):
     if len(s1) < len(s2):
@@ -40,10 +42,9 @@ def closest_word(target_word, word_list, used_words):
     return closest if min_distance <= (len(target_word) - 1) else "Слово не найдено!"
 
 words = massive().load_words_from_json()
-branches_iterations = 3
+branches_iterations = 1
 iterations = 151
 target_word = input("Введите слово на русском языке: ")
-used_words = set()
 
 def generate_branch(iterations, target_word, used_words):
     branch = []
@@ -58,14 +59,25 @@ def generate_branch(iterations, target_word, used_words):
         target_word = closest
     return branch
 
-branches = {}
-print(f"Оригинальное слово:", target_word)
-for i in range(1, branches_iterations + 1):
-    branches[i] = generate_branch(iterations, target_word, used_words)
-    print(f"Ветка {i}:")
-    for j, word in enumerate(branches[i]):
-        if word != "©": 
-            print(f"[{j}] Ближайшее слово:", word)
-        elif word == "Слово не найдено!":
-            break
-    print()
+def generate_tree_for_branches(branches_iterations, iterations, target_word):
+    root = TreeNode(f"Оригинальное слово: {target_word}")
+    used_words_set = set()
+    used_words_for_branches = [set() for _ in range(branches_iterations)]
+    for i in range(1, branches_iterations + 1):
+        used_words = used_words_for_branches[i - 1]
+        branch = generate_branch(iterations, target_word, used_words)
+        branch_node = TreeNode(f"Ветка {i}:")
+        unique_branch_words = set()
+        for j, word in enumerate(branch):
+            if word != "©":
+                if word not in unique_branch_words and word not in used_words_set:
+                    branch_node.add_child(TreeNode(f"[{j}] Ближайшее слово: {word}"))
+                    unique_branch_words.add(word)
+                    used_words_set.add(word)
+            elif word == "Слово не найдено!":
+                break
+        root.add_child(branch_node)
+    return root
+
+tree = generate_tree_for_branches(branches_iterations, iterations, target_word)
+print(tree)

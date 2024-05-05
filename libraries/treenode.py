@@ -14,7 +14,7 @@ class TreeNode:
         if level > 0:
             ret += "│   " * (level - 1)
             ret += "├── " if not last else "└── "
-        ret += repr(self.name) + ("/" if not self.is_file else "") + "\n"
+        ret += repr(self.name) + "\n"
         for i, child in enumerate(self.children):
             last = i == len(self.children) - 1
             ret += child.__repr__(level + 1, last)
