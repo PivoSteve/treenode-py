@@ -1,18 +1,17 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='treenode',
-    version='1.1.0',
+    name='treenode-py',
+    version='1.2.0',
     packages=find_packages(),
     license='MIT',
-    description='TreeNode is a Python library that provides functionality to create and manipulate tree structures.',
+    description='treenode-py (treenode) is a Python library that provides functionality to create and manipulate tree structures.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     author='Syra',
     author_email='horriblebuba@gmail.com',
     url='https://github.com/PivoSteve/treenode-py',
     project_urls={
-        'Repository': 'https://github.com/PivoSteve/treenode-py',
         'Source': 'https://github.com/PivoSteve/treenode-py',
     },
     keywords='tree directory file system node structures structure',
