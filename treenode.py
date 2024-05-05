@@ -1,18 +1,16 @@
 import os
 
 class TreeNode:
-    def __init__(self, name, is_path=True, is_file=False):
+    def __init__(self, name, slash=True):
         """
         Initializes a tree node.
 
         Args:
             name (str): The name of the node.
-            is_path (bool, optional): Indicates whether the node represents a directory path. Defaults to True.
-            is_file (bool, optional): Indicates whether the node represents a file. Defaults to False.
+            slash (bool, optional): Indicates whether the node represents a directory path with /. Defaults to True.
         """
         self.name = name
-        self.is_file = is_file
-        self.is_path = is_path
+        self.slash = slash
         self.children = []
 
     def add_child(self, child_node):
@@ -39,10 +37,7 @@ class TreeNode:
         if level > 0:
             ret += "│   " * (level - 1)
             ret += "├── " if not last else "└── "
-        if self.is_path:
-            ret += self.name + ("/" if not self.is_file else "") + "\n"
-        else:
-            ret += self.name + "\n"
+        ret += self.name + ("/" if not self.slash else "") + "\n"
         for i, child in enumerate(self.children):
             last = i == len(self.children) - 1
             ret += child.__repr__(level + 1, last)
