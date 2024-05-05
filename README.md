@@ -1,4 +1,4 @@
-# TreeNode
+# [TreeNode](https://pypi.org/project/treenode-py/)
 
 TreeNode is a Python library that provides functionality to create and manipulate tree structures.
 
@@ -7,7 +7,7 @@ TreeNode is a Python library that provides functionality to create and manipulat
 ## Installation
 You can install TreeNode using pip:
 ```
-pip install treenode
+pip install treenode-py
 ```
 
 ## Usage
