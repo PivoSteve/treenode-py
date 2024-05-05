@@ -59,3 +59,10 @@ if __name__ == "__main__":
     tree = TreeNode(os.path.basename(path)).generate_treepath(path)
     print(tree)
     print("TreeNode depth:", tree.get_depth())
+
+    node_name = input("Enter the name of the node to search for: ")
+    found_node = tree.find_node(node_name)
+    if found_node:
+        print(f"Node '{node_name}' found: {found_node}")
+    else:
+        print(f"Node '{node_name}' was not found.")
