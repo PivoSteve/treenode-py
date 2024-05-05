@@ -33,29 +33,39 @@ def closest_word(target_word, word_list, used_words):
                 closest = word
                 min_distance = distance
             elif distance == min_distance and closest is not None:
-                closest = min(closest, word)
+                closest = max(closest, word)
 
     if closest is not None:
         used_words.add(closest)
     return closest if min_distance <= (len(target_word) - 1) else "Слово не найдено!"
 
 words = massive().load_words_from_json()
-iterations = 51
-target_word = "крем"
+branches_iterations = 3
+iterations = 151
+target_word = input("Введите слово на русском языке: ")
 used_words = set()
 
 def generate_branch(iterations, target_word, used_words):
     branch = []
+    closest = None
     for i in range(iterations):
-        closest = closest_word(target_word, words, used_words)
-        branch.append(closest)
+        if closest is None:
+            closest = closest_word(target_word, words, used_words)
+            branch.append("©")
+        else:
+            closest = closest_word(closest, words, used_words)
+            branch.append(closest)
         target_word = closest
     return branch
 
 branches = {}
-for i in range(1, 5):
+print(f"Оригинальное слово:", target_word)
+for i in range(1, branches_iterations + 1):
     branches[i] = generate_branch(iterations, target_word, used_words)
     print(f"Ветка {i}:")
     for j, word in enumerate(branches[i]):
-        print(f"[{j}] Ближайшее слово:", word)
+        if word != "©": 
+            print(f"[{j}] Ближайшее слово:", word)
+        elif word == "Слово не найдено!":
+            break
     print()
