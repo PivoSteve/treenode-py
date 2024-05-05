@@ -54,11 +54,41 @@ class TreeNode:
             return 1
         return 1 + max(child.get_depth() for child in self.children)
 
+    def get_files(self):
+        files = []
+        if self.is_file:
+            files.append(self.name)
+        for child in self.children:
+            files.extend(child.get_files())
+        return files
+
+    def get_folders(self):
+        folders = []
+        if not self.is_file:
+            folders.append(self.name)
+        for child in self.children:
+            folders.extend(child.get_folders())
+        return folders
+
+    def count_files(self):
+        count = 0
+        if self.is_file:
+            return 1
+        for child in self.children:
+            count += child.count_files()
+        return count
+
+    def count_folders(self):
+        count = 1 if not self.is_file else 0
+        for child in self.children:
+            count += child.count_folders()
+        return count
+
+
 if __name__ == "__main__":
     path = input("Enter the path to the folder: ")
     tree = TreeNode(os.path.basename(path)).generate_treepath(path)
     print(tree)
-    print("TreeNode depth:", tree.get_depth())
 
     node_name = input("Enter the name of the node to search for: ")
     found_node = tree.find_node(node_name)
